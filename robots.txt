@@ -1,0 +1,8 @@
+# Robots.txt for KTU Question Papers Portal
+User-agent: *
+Allow: /
+Disallow: /backup/
+Disallow: /backup_v2.0/
+
+# Sitemap location
+Sitemap: https://ktunotes.in/sitemap.xml
