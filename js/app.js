@@ -61,11 +61,15 @@ class KTUPortalApp {
       .replace(/'/g, '&#039;');
   }
 
-  // Site-Wide Under Maintenance Popup on Website Open (Shows only once per user)
+  // Site-Wide Under Maintenance Popup on Website Open (Shows only on Index Page)
   showSiteMaintenancePopup() {
+    // Only show the startup warning on the index / landing page
+    if (this.isRepoPage) {
+      return;
+    }
+
     try {
-      if (localStorage.getItem('site_maintenance_acknowledged') === 'true' ||
-          sessionStorage.getItem('site_maintenance_acknowledged') === 'true') {
+      if (sessionStorage.getItem('site_maintenance_acknowledged') === 'true') {
         return;
       }
     } catch (e) {}
