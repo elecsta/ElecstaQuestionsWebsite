@@ -53,7 +53,6 @@ class KTUPortalApp {
     this.renderSelectorControls();
     this.renderPortal();
     this.updateBookmarkBadge();
-    this.showSiteMaintenancePopup();
   }
 
   // Security Sanitization Helper (XSS Prevention)
@@ -65,83 +64,6 @@ class KTUPortalApp {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
-  }
-
-  // Site-Wide Under Maintenance Popup on Website Open (Shows only on Index Page)
-  showSiteMaintenancePopup() {
-    // Only show the startup warning on the index / landing page
-    if (this.isRepoPage) {
-      return;
-    }
-
-    try {
-      if (sessionStorage.getItem('site_maintenance_acknowledged') === 'true') {
-        return;
-      }
-    } catch (e) {}
-
-    let modal = document.getElementById('site-maintenance-modal');
-    if (!modal) {
-      modal = document.createElement('div');
-      modal.className = 'modal-overlay';
-      modal.id = 'site-maintenance-modal';
-      modal.setAttribute('role', 'dialog');
-      modal.setAttribute('aria-modal', 'true');
-      modal.innerHTML = `
-        <div class="modal-container" style="max-width: 470px; text-align: center; border-radius: 16px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.5); border: 1px solid var(--border-strong);">
-          <div class="modal-header" style="justify-content: flex-end; padding: 0.65rem 0.95rem; background: var(--surface-container); border-bottom: 1px solid var(--border-subtle);">
-            <button class="btn-icon-square modal-close-btn" type="button" aria-label="Close" style="width: 32px; height: 32px;">
-              <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
-            </button>
-          </div>
-          <div class="modal-body" style="padding: 1.85rem 1.6rem 1.35rem 1.6rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem;">
-            <div style="width: 68px; height: 68px; border-radius: 50%; background: rgba(245, 158, 11, 0.14); border: 1.5px solid rgba(245, 158, 11, 0.4); display: flex; align-items: center; justify-content: center;">
-              <span class="material-symbols-outlined" style="font-size: 36px; color: #f59e0b;">engineering</span>
-            </div>
-            <div style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 4px 14px; border-radius: 999px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); color: #d97706; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
-              <span style="width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
-              PDF Verification in Progress
-            </div>
-            <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 800; color: var(--on-surface); margin: 0; letter-spacing: -0.01em;">
-              Notice: PDF Audit &amp; Correction
-            </h3>
-            <p style="font-size: 0.875rem; color: var(--on-surface-variant); line-height: 1.55; margin: 0;">
-              We are currently auditing and updating all question paper PDFs and answer keys to correct any potential errors, missing pages, or wrong files. You can continue exploring question paper previews and syllabus online, but direct PDF downloads are temporarily paused until 100% verified copies are uploaded.
-            </p>
-            <div style="width: 100%; background: var(--surface-container); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.75rem 0.95rem; font-size: 0.75rem; color: var(--on-surface-muted); text-align: left; display: flex; align-items: flex-start; gap: 0.5rem; margin-top: 0.25rem;">
-              <span class="material-symbols-outlined" style="font-size: 18px; color: var(--primary); flex-shrink: 0; margin-top: 1px;">info</span>
-              <span>Our team is cross-checking each subject PDF against official KTU valuation schemes to ensure 100% accuracy. Downloads will be restored shortly.</span>
-            </div>
-          </div>
-          <div class="modal-footer" style="justify-content: center; padding: 1rem 1.25rem; background: var(--surface-container); border-top: 1px solid var(--border-subtle);">
-            <button class="btn-tech primary modal-close-btn" id="site-maint-ok-btn" type="button" style="min-width: 150px; justify-content: center; padding: 0.7rem 2rem; font-size: 0.95rem; font-weight: 700; border-radius: 8px;">
-              OK
-            </button>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(modal);
-
-      const dismiss = () => {
-        modal.classList.remove('active');
-        try {
-          localStorage.setItem('site_maintenance_acknowledged', 'true');
-          sessionStorage.setItem('site_maintenance_acknowledged', 'true');
-        } catch (e) {}
-      };
-
-      modal.querySelectorAll('.modal-close-btn').forEach(btn => {
-        btn.addEventListener('click', dismiss);
-      });
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) dismiss();
-      });
-    }
-
-    // Smooth entry after brief render delay
-    setTimeout(() => {
-      modal.classList.add('active');
-    }, 250);
   }
 
   // Downloads Under Maintenance Modal & Alert System
