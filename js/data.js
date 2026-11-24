@@ -576,7 +576,7 @@ const KTU_DATA = {
   // Sample KTU Question Paper Previews for the interactive PDF viewer
   samplePapers: {
     "cst201-2024-reg": {
-      title: "APJ ABDUL KALAM TECHNOLOGICAL UNIVERSITY",
+      title: "KTU EXAMINATION",
       examTitle: "THIRD SEMESTER B.TECH DEGREE EXAMINATION, JANUARY 2024",
       courseCode: "CST 201",
       courseName: "DATA STRUCTURES",
