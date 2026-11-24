@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>KTU Question Papers PDF (2024 & 2019 Scheme) — APJ Abdul Kalam Technological University</title>
-  <meta name="description" content="Download KTU previous year question papers (PYQs), solved question paper keys, and model questions for APJ Abdul Kalam Technological University B.Tech students (2024 & 2019 scheme, S1-S8, CSE, ECE, EEE, ME, CE, AI & DS, IT)." />
+  <meta name="description" content="Download KTU previous year question papers (PYQs), solved question paper keys, and model questions for APJ Abdul Kalam Technological University B.Tech students (2024 & 2019 scheme, S1-S8, CSE, AI & DS, ECE, EEE, ME, CE)." />
   <meta name="keywords" content="KTU question papers, KTU previous year question papers, KTU PYQs, KTU 2024 scheme question papers, KTU 2019 scheme, KTU solved question papers, KTU answer key, KTU BTech papers, KTU S1 S2 S3 S4 S5 S6 S7 S8, KTU CSE question papers, APJ Abdul Kalam Technological University question bank" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
@@ -88,7 +88,7 @@
             "name": "Which KTU engineering branches are supported?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "We support Computer Science & Engineering (CSE), Artificial Intelligence & Data Science (AI & DS), Electronics & Communication (ECE), Electrical & Electronics (EEE), Mechanical Engineering (ME), Civil Engineering (CE), Information Technology (IT), and Chemical Engineering (CHE)."
+              "text": "We support Computer Science & Engineering (CSE), Artificial Intelligence & Data Science (AI & DS - 2024 Scheme), Electronics & Communication (ECE), Electrical & Electronics (EEE), Mechanical Engineering (ME), and Civil Engineering (CE)."
             }
           },
           {
@@ -115,7 +115,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
 
   <!-- Architectural Stylesheet with Cache Busting -->
-  <link rel="stylesheet" href="css/style.css?v=20261123-9" />
+  <link rel="stylesheet" href="css/style.css?v=20261124-5" />
 
   <!-- Immediate Theme Initializer -->
   <script>
@@ -141,10 +141,12 @@
 
       <!-- Minimalist Navigation Link + Theme Toggle -->
       <nav class="nav-links">
+        <!-- Temporarily hidden: All Papers repository direct link
         <a href="papers.html" class="nav-item">
           <span class="material-symbols-outlined" style="font-size: 16px;">article</span>
           <span class="nav-item-text">All Papers</span>
         </a>
+        -->
 
         <!-- Light / Dark Theme Switcher -->
         <button class="theme-toggle-btn" id="theme-toggle" type="button" title="Switch theme" aria-label="Toggle Theme">
@@ -220,7 +222,7 @@
           </div>
         </div>
 
-        <!-- Action Center -->
+        <!-- Action Center (Single Clean Explore Button with Integrated Drive) -->
         <div class="flow-action-center">
           <button class="btn-launch-glow" id="cta-launch-btn" type="button">
             <span>Explore Question Papers</span>
@@ -237,14 +239,14 @@
   <!-- Site Footer (Minimalist & Clean) -->
   <footer class="site-footer">
     <div class="footer-content" style="justify-content: center; text-align: center; flex-direction: column; gap: 0.35rem;">
-      <span>© 2025 KTU Question Papers • Verified University Examination Archives • APJ Abdul Kalam Technological University</span>
+      <span>© 2025 KTU Question Papers</span>
       <span style="font-size: 0.825rem; color: var(--on-surface-muted);">An initiative by <strong>ELECSTA</strong> — Electronics and Communication Students' Technical Association, College of Engineering Karunagappally</span>
     </div>
   </footer>
 
   <!-- Scripts with Cache-Busting Parameters -->
-  <script src="js/data.js?v=20261123-10"></script>
-  <script src="js/app.js?v=20261123-10"></script>
+  <script src="js/data.js?v=20261124-5"></script>
+  <script src="js/app.js?v=20261124-5"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const launchBtn = document.getElementById('cta-launch-btn');
@@ -252,6 +254,12 @@
         launchBtn.addEventListener('click', () => {
           const app = window.ktuApp;
           if (app) {
+            const folderId = app.getDriveFolderId(app.state.scheme, app.state.branch);
+            if (folderId) {
+              // Direct browser view (embeddedfolderview ensures browser opens instead of Google Drive mobile app)
+              window.open(app.getDriveBrowserUrl(folderId), '_blank', 'noopener,noreferrer');
+              return;
+            }
             window.location.href = `papers.html?scheme=${app.state.scheme}&branch=${app.state.branch}&sem=${app.state.sem}`;
           } else {
             window.location.href = 'papers.html';

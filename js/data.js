@@ -29,7 +29,8 @@ const KTU_DATA = {
       shortName: "Computer Science",
       code: "CSE",
       icon: "terminal",
-      coursesCount: "42 Subjects"
+      coursesCount: "42 Subjects",
+      schemes: ["2024", "2019"]
     },
     {
       id: "AD",
@@ -37,7 +38,8 @@ const KTU_DATA = {
       shortName: "AI & Data Science",
       code: "AI & DS",
       icon: "psychology",
-      coursesCount: "38 Subjects"
+      coursesCount: "38 Subjects",
+      schemes: ["2024"]
     },
     {
       id: "EC",
@@ -45,7 +47,8 @@ const KTU_DATA = {
       shortName: "Electronics",
       code: "ECE",
       icon: "memory",
-      coursesCount: "40 Subjects"
+      coursesCount: "40 Subjects",
+      schemes: ["2024", "2019"]
     },
     {
       id: "EE",
@@ -53,7 +56,8 @@ const KTU_DATA = {
       shortName: "Electrical",
       code: "EEE",
       icon: "bolt",
-      coursesCount: "39 Subjects"
+      coursesCount: "39 Subjects",
+      schemes: ["2024", "2019"]
     },
     {
       id: "ME",
@@ -61,7 +65,8 @@ const KTU_DATA = {
       shortName: "Mechanical",
       code: "ME",
       icon: "settings",
-      coursesCount: "44 Subjects"
+      coursesCount: "44 Subjects",
+      schemes: ["2024", "2019"]
     },
     {
       id: "CE",
@@ -69,23 +74,8 @@ const KTU_DATA = {
       shortName: "Civil",
       code: "CE",
       icon: "apartment",
-      coursesCount: "41 Subjects"
-    },
-    {
-      id: "IT",
-      name: "Information Tech",
-      shortName: "Information Tech",
-      code: "IT",
-      icon: "hub",
-      coursesCount: "36 Subjects"
-    },
-    {
-      id: "CH",
-      name: "Chemical",
-      shortName: "Chemical",
-      code: "CHE",
-      icon: "science",
-      coursesCount: "35 Subjects"
+      coursesCount: "41 Subjects",
+      schemes: ["2024", "2019"]
     }
   ],
 
@@ -98,6 +88,21 @@ const KTU_DATA = {
 
   semesters: ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"],
 
+  // Official Google Drive Folder Archives per Scheme & Branch
+  driveLinks: {
+    "2024": {
+      "AD": "1dvWyFSLbeWmR01ANQuH02ewlGmRQTxDG",
+      "CS": "1PJ0FoaX8jVNxi4ajbZ0Q6R8Ju4RwGg6-",
+      "EC": "1q2t8_Y_bYsbY0ll_adrgsynt7yWnP_e3",
+      "ME": "1JinSE08ARrwEdAbor4_K6Ta7yelB5WU0"
+    },
+    "2019": {
+      "CS": "18kBRI1Ino-gVCSrsQmB5dJQGfwhIxAsv",
+      "EC": "16-6dN_9YbjfSHJXICwYKfXHkz05_nmNm",
+      "ME": "18aB0440S7A6gUTk4eixAQes7wJJHt0FS"
+    }
+  },
+
   // Comprehensive KTU Subjects catalog across branches and schemes
   subjects: [
     // S1 / S2 Common & Departmental Foundation
@@ -105,7 +110,7 @@ const KTU_DATA = {
       id: "mat101",
       code: "MAT 101",
       name: "Linear Algebra and Calculus",
-      branch: ["CS", "EC", "EE", "ME", "CE", "AD", "IT", "CH"],
+      branch: ["CS", "EC", "EE", "ME", "CE", "AD"],
       sem: "S1",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -137,7 +142,7 @@ const KTU_DATA = {
       id: "pht100",
       code: "PHT 100",
       name: "Engineering Physics A",
-      branch: ["CS", "EC", "EE", "ME", "CE", "AD", "IT"],
+      branch: ["CS", "EC", "EE", "ME", "CE", "AD"],
       sem: "S1",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -166,7 +171,7 @@ const KTU_DATA = {
       id: "est102",
       code: "EST 102",
       name: "Programming in C",
-      branch: ["CS", "EC", "EE", "ME", "CE", "AD", "IT"],
+      branch: ["CS", "EC", "EE", "ME", "CE", "AD"],
       sem: "S2",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -197,7 +202,7 @@ const KTU_DATA = {
       id: "cst201",
       code: "CST 201",
       name: "Data Structures",
-      branch: ["CS", "AD", "IT"],
+      branch: ["CS", "AD"],
       sem: "S3",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -229,7 +234,7 @@ const KTU_DATA = {
       id: "cst203",
       code: "CST 203",
       name: "Logic System Design",
-      branch: ["CS", "AD", "IT"],
+      branch: ["CS", "AD"],
       sem: "S3",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -257,7 +262,7 @@ const KTU_DATA = {
       id: "mat203",
       code: "MAT 203",
       name: "Discrete Mathematical Structures",
-      branch: ["CS", "AD", "IT"],
+      branch: ["CS", "AD"],
       sem: "S3",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -287,7 +292,7 @@ const KTU_DATA = {
       id: "cst202",
       code: "CST 202",
       name: "Computer Organization and Architecture",
-      branch: ["CS", "AD", "IT"],
+      branch: ["CS", "AD"],
       sem: "S4",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -316,7 +321,7 @@ const KTU_DATA = {
       id: "cst204",
       code: "CST 204",
       name: "Database Management Systems",
-      branch: ["CS", "AD", "IT"],
+      branch: ["CS", "AD"],
       sem: "S4",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -344,7 +349,7 @@ const KTU_DATA = {
       id: "cst206",
       code: "CST 206",
       name: "Operating Systems",
-      branch: ["CS", "AD", "IT"],
+      branch: ["CS", "AD"],
       sem: "S4",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -374,7 +379,7 @@ const KTU_DATA = {
       id: "cst301",
       code: "CST 301",
       name: "Formal Languages and Automata Theory",
-      branch: ["CS", "AD", "IT"],
+      branch: ["CS", "AD"],
       sem: "S5",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -402,7 +407,7 @@ const KTU_DATA = {
       id: "cst303",
       code: "CST 303",
       name: "Computer Networks",
-      branch: ["CS", "AD", "IT"],
+      branch: ["CS", "AD"],
       sem: "S5",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -431,7 +436,7 @@ const KTU_DATA = {
       id: "cst302",
       code: "CST 302",
       name: "Compiler Design",
-      branch: ["CS", "IT"],
+      branch: ["CS"],
       sem: "S6",
       schemes: ["2024", "2019"],
       credits: 4,
@@ -460,7 +465,7 @@ const KTU_DATA = {
       id: "cst401",
       code: "CST 401",
       name: "Artificial Intelligence",
-      branch: ["CS", "AD", "IT"],
+      branch: ["CS", "AD"],
       sem: "S7",
       schemes: ["2024", "2019"],
       credits: 3,

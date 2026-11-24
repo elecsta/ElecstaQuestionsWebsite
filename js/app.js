@@ -20,13 +20,19 @@ class KTUPortalApp {
     const rawTab = urlParams.get('tab');
 
     const validSchemes = ['2024', '2019'];
-    const validBranches = ['CS', 'AD', 'EC', 'EE', 'ME', 'CE', 'IT', 'CH'];
+    const validBranches = ['CS', 'AD', 'EC', 'EE', 'ME', 'CE'];
     const validSemesters = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'];
     const validTabs = ['pyqs', 'notes', 'syllabus', 'saved'];
 
+    const chosenScheme = validSchemes.includes(rawScheme) ? rawScheme : '2024';
+    let chosenBranch = validBranches.includes(rawBranch) ? rawBranch : 'CS';
+    if (chosenScheme === '2019' && chosenBranch === 'AD') {
+      chosenBranch = 'CS';
+    }
+
     this.state = {
-      scheme: validSchemes.includes(rawScheme) ? rawScheme : '2024',
-      branch: validBranches.includes(rawBranch) ? rawBranch : 'CS',
+      scheme: chosenScheme,
+      branch: chosenBranch,
       year: 2,
       sem: validSemesters.includes(rawSem) ? rawSem : 'S3',
       viewTab: validTabs.includes(rawTab) ? rawTab : 'pyqs', // 'pyqs' | 'notes' | 'syllabus' | 'saved'
@@ -429,6 +435,9 @@ class KTUPortalApp {
       quickScheme.value = this.state.scheme;
       quickScheme.addEventListener('change', (e) => {
         this.state.scheme = e.target.value;
+        if (this.state.scheme === '2019' && this.state.branch === 'AD') {
+          this.state.branch = 'CS';
+        }
         this.updateUrlParams();
         this.renderSelectorControls();
         this.renderPortal();
@@ -505,15 +514,22 @@ class KTUPortalApp {
       this.schemeGroup.querySelectorAll('.scheme-segment-btn').forEach(card => {
         card.addEventListener('click', () => {
           this.state.scheme = card.dataset.scheme;
+          if (this.state.scheme === '2019' && this.state.branch === 'AD') {
+            this.state.branch = 'CS';
+          }
           this.renderSelectorControls();
           this.renderPortal();
         });
       });
     }
 
-    // 2. Branches Horizontal Box Cards (Concise, no full course name, horizontal flow)
+    // 2. Branches Horizontal Box Cards (Filtered by active scheme)
     if (this.branchGroup) {
-      this.branchGroup.innerHTML = KTU_DATA.branches.map(b => `
+      const activeBranches = KTU_DATA.branches.filter(b => b.schemes.includes(this.state.scheme));
+      if (!activeBranches.some(b => b.id === this.state.branch)) {
+        this.state.branch = 'CS';
+      }
+      this.branchGroup.innerHTML = activeBranches.map(b => `
         <button class="branch-chip-btn ${b.id === this.state.branch ? 'active' : ''}" data-branch="${b.id}" type="button" title="${b.name}">
           <span class="material-symbols-outlined branch-icon">${b.icon}</span>
           <span class="branch-code-text">${b.code}</span>
@@ -573,9 +589,72 @@ class KTUPortalApp {
     const qScheme = document.getElementById('quick-scheme-select');
     if (qScheme) qScheme.value = this.state.scheme;
     const qBranch = document.getElementById('quick-branch-select');
-    if (qBranch) qBranch.value = this.state.branch;
+    if (qBranch) {
+      const adOption = qBranch.querySelector('option[value="AD"]');
+      if (adOption) {
+        if (this.state.scheme === '2019') {
+          adOption.style.display = 'none';
+          adOption.disabled = true;
+          if (this.state.branch === 'AD') {
+            this.state.branch = 'CS';
+          }
+        } else {
+          adOption.style.display = '';
+          adOption.disabled = false;
+        }
+      }
+      qBranch.value = this.state.branch;
+    }
     const qSem = document.getElementById('quick-sem-select');
     if (qSem) qSem.value = this.state.sem;
+  }
+
+  // Google Drive Helpers
+  getDriveFolderId(scheme, branch) {
+    if (!KTU_DATA.driveLinks) return null;
+    const s = KTU_DATA.driveLinks[scheme];
+    return s && s[branch] ? s[branch] : null;
+  }
+
+  // embeddedfolderview opens directly inside mobile & desktop web browsers without triggering the Google Drive native app
+  getDriveBrowserUrl(folderId) {
+    return `https://drive.google.com/embeddedfolderview?id=${folderId}#grid`;
+  }
+
+  getDriveAppUrl(folderId) {
+    return `https://drive.google.com/drive/folders/${folderId}?usp=sharing`;
+  }
+
+  renderDriveBanner(folderId, branchObj) {
+    if (!folderId) return '';
+    const bName = branchObj ? branchObj.shortName : this.state.branch;
+    const browserUrl = this.getDriveBrowserUrl(folderId);
+
+    return `
+      <div class="repo-drive-banner">
+        <div class="drive-banner-left">
+          <div class="drive-icon-badge">
+            <span class="material-symbols-outlined">cloud_sync</span>
+          </div>
+          <div class="drive-banner-text">
+            <div class="drive-banner-title">
+              <span>Google Drive Question Papers Archive</span>
+              <span class="drive-status-dot"></span>
+              <span class="drive-status-label">Online</span>
+            </div>
+            <div class="drive-banner-sub">
+              Access all <strong>${this.escapeHTML(bName)} (${this.escapeHTML(this.state.scheme)} Scheme)</strong> question papers &amp; valuation schemes in Google Drive.
+            </div>
+          </div>
+        </div>
+        <div class="drive-banner-actions">
+          <a href="${browserUrl}" target="_blank" rel="noopener noreferrer" class="drive-btn-browser" title="Opens Drive repository inside your browser">
+            <span class="material-symbols-outlined" style="font-size: 18px;">open_in_browser</span>
+            <span>Open in Browser</span>
+          </a>
+        </div>
+      </div>
+    `;
   }
 
   // Filter subjects matching current scheme, branch, semester & inpage search
@@ -636,13 +715,17 @@ class KTUPortalApp {
       this.contextCount.textContent = `${subjects.length} Subjects Listed`;
     }
 
+    const folderId = this.getDriveFolderId(this.state.scheme, this.state.branch);
+    const driveBannerHtml = this.renderDriveBanner(folderId, branchObj);
+
     if (subjects.length === 0) {
       this.subjectsContainer.innerHTML = `
+        ${driveBannerHtml}
         <div style="text-align:center;padding:4rem 1rem;background-color:var(--surface-low);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);">
           <span class="material-symbols-outlined" style="font-size:48px;color:var(--on-surface-muted);margin-bottom:1rem;">folder_open</span>
-          <h3 style="font-size:1.25rem;margin-bottom:0.5rem;">No Curriculum Records for this Filter</h3>
+          <h3 style="font-size:1.25rem;margin-bottom:0.5rem;">No Specific Subject Cards for this Filter</h3>
           <p style="color:var(--on-surface-variant);max-width:440px;margin:0 auto 1.5rem auto;font-size:0.875rem;">
-            No verified courses indexed for <strong>${this.escapeHTML(this.state.scheme)} Scheme (${this.escapeHTML(this.state.sem)} - ${this.escapeHTML(branchObj ? branchObj.shortName : '')})</strong> yet.
+            You can access all available question papers directly via the Google Drive repository above.
           </p>
           <button class="btn-tech primary open-request-paper-btn" type="button">
             <span class="material-symbols-outlined" style="font-size:16px;">upload_file</span>
@@ -657,7 +740,7 @@ class KTUPortalApp {
       return;
     }
 
-    this.subjectsContainer.innerHTML = subjects.map(subj => {
+    this.subjectsContainer.innerHTML = driveBannerHtml + subjects.map(subj => {
       return `
         <div class="subject-card" id="subj-${subj.id}">
           <div class="subject-header">
@@ -819,13 +902,19 @@ class KTUPortalApp {
       });
     });
 
-    // Download buttons -> Under maintenance trigger
+    // Download buttons -> Open in Browser Google Drive if available, else maintenance trigger
     this.subjectsContainer.querySelectorAll('.download-paper-btn, .download-note-btn, .download-syllabus-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const itemName = btn.getAttribute('data-subj-name') || 'Question Paper PDF';
-        this.showMaintenanceModal(itemName);
+        const folderId = this.getDriveFolderId(this.state.scheme, this.state.branch);
+        if (folderId) {
+          // Open in Browser View (embeddedfolderview ensures browser opens instead of Google Drive mobile app)
+          window.open(this.getDriveBrowserUrl(folderId), '_blank', 'noopener,noreferrer');
+        } else {
+          const itemName = btn.getAttribute('data-subj-name') || 'Question Paper PDF';
+          this.showMaintenanceModal(itemName);
+        }
       });
     });
 
@@ -880,7 +969,7 @@ class KTUPortalApp {
           <h2>${sample.title}</h2>
           <div class="paper-exam-title">${this.escapeHTML(info.year ? info.year : '2024')} B.TECH DEGREE EXAMINATION</div>
           <div class="paper-course-title">Course Code: ${this.escapeHTML(info.code || 'CST 201')} — Course Name: ${this.escapeHTML(info.name || 'DATA STRUCTURES')}</div>
-          <div style="font-size:0.875rem;margin-top:4px;">(Common to CSE, AI & Data Science, IT)</div>
+          <div style="font-size:0.875rem;margin-top:4px;">(Common to CSE, AI & Data Science)</div>
         </div>
 
         <div class="paper-specs-table">
